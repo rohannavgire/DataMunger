@@ -8,52 +8,89 @@ import java.util.List;
  * */
 public class QueryParameter {
 
+	private String queryString, fileName, baseQuery, QUERY_TYPE = "select";
+	private List<String> fields, logicalOperators, orderByFields, groupByFields;
+	private List<AggregateFunction> aggregateFunctions;
+	private List<Restriction> restrictions;
+	
 	public String getFileName() {
-		// TODO Auto-generated method stub
-		return null;
+		return fileName;
 	}
 
 	public List<String> getFields() {
-		// TODO Auto-generated method stub
-		return null;
+		return fields;
 	}
 
 	public List<Restriction> getRestrictions() {
-		// TODO Auto-generated method stub
-		return null;
+		return restrictions;
 	}
 
 	public String getBaseQuery() {
-		// TODO Auto-generated method stub
-		return null;
+		return baseQuery;
 	}
 
 	public List<AggregateFunction> getAggregateFunctions() {
-		// TODO Auto-generated method stub
-		return null;
+		return aggregateFunctions;
 	}
 
 	public List<String> getLogicalOperators() {
-		// TODO Auto-generated method stub
-		return null;
+		return logicalOperators;
+	}
+	
+	public String getQueryString() {
+		return queryString;
+	}
+
+	public void setQueryString(String queryString) {
+		this.queryString = queryString;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public void setBaseQuery(String baseQuery) {
+		this.baseQuery = baseQuery;
+	}
+
+	public void setQUERY_TYPE(String qUERY_TYPE) {
+		QUERY_TYPE = qUERY_TYPE;
+	}
+
+	public void setFields(List<String> fields) {
+		this.fields = fields;
+	}
+
+	public void setLogicalOperators(List<String> logicalOperators) {
+		this.logicalOperators = logicalOperators;
+	}
+
+	public void setOrderByFields(List<String> orderByFields) {
+		this.orderByFields = orderByFields;
+	}
+
+	public void setGroupByFields(List<String> groupByFields) {
+		this.groupByFields = groupByFields;
+	}
+
+	public void setAggregateFunctions(List<AggregateFunction> aggregateFunctions) {
+		this.aggregateFunctions = aggregateFunctions;
+	}
+
+	public void setRestrictions(List<Restriction> restrictions) {
+		this.restrictions = restrictions;
 	}
 
 	public List<String> getGroupByFields() {
-		// TODO Auto-generated method stub
-		return null;
+		return groupByFields;
 	}
 
 	public List<String> getOrderByFields() {
-		// TODO Auto-generated method stub
-		return null;
+		return orderByFields;
 	}
 
 	public String getQUERY_TYPE() {
-		// TODO Auto-generated method stub
-		return null;
+		return QUERY_TYPE;
 	}
 
-		
-
-	
 }

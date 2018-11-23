@@ -1,5 +1,9 @@
 package com.stackroute.datamunger.writer;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,14 +28,41 @@ public class JsonWriter {
 		 * write JSON string to data/result.json file. As we are performing File IO,
 		 * consider handling exception
 		 */
+		Boolean writeStatus = null;
+		File file = new File("data/result.json");
+		if(!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				System.out.println("Error creating result.json - "+e.getMessage());
+			}
+		}
+		BufferedWriter bw = null;
+		try {
+			bw = new BufferedWriter(new FileWriter(file));
+		} catch (IOException e1) {
+			System.out.println("Error creating BufferedWriter - "+e1.getMessage());
+		}
+		try {			
+			bw.write(result);
+			writeStatus = true;
+		} catch (IOException e) {
+			writeStatus = false;
+			System.out.println("Error writing to result.json - "+e.getMessage());
+		}
 
 		/* return true if file writing is successful */
 
 		/* return false if file writing is failed */
 
 		/* close BufferedWriter object */
+		try {
+			bw.close();
+		} catch (IOException e) {
+			System.out.println("Error clsing BufferedReader - "+e.getMessage());
+		}
 
-		return false;
+		return writeStatus;
 	}
 
 }

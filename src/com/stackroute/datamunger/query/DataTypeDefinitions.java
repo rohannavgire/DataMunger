@@ -35,7 +35,31 @@ public class DataTypeDefinitions {
 		
 		// checking for date format yyyy-mm-dd
 		
-		return null;
+		String dataType = null;
+		
+		if(input.matches("[0-9]+") && input.matches("^(?=\\s*\\S).*$")) {
+			dataType = "java.lang.Integer";
+		}
+		else if(input.matches("[0-9&&[.]]+") && input.matches("^(?=\\s*\\S).*$")) {
+			dataType = "java.lang.Double";
+		}
+		else if((input.matches("\\d{4}-\\d{2}-\\d{2}") ||
+				input.matches("\\d{2}/\\d{2}/\\d{4}") ||
+				input.matches("\\d{2}-\\D{3}-\\d{2}") ||
+				input.matches("\\d{2}-\\D{3}-\\d{4}") ||
+				input.matches("\\d{2}-\\w{3,8}\\b-\\d{4}")) &&
+				input.matches("^(?=\\s*\\S).*$")
+				) {
+			dataType = "java.util.Date";
+		}
+		else if (!(input.matches("[0-9]+")) && input.matches("^(?=\\s*\\S).*$")){
+			dataType = "java.lang.String";
+		}
+		else if (input.matches("^$")){
+			dataType = "java.lang.Object";
+		}
+		
+		return dataType;
 	}
 	
 

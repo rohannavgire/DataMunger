@@ -1,24 +1,54 @@
 package com.stackroute.datamunger.reader;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+
 import com.stackroute.datamunger.query.DataSet;
+import com.stackroute.datamunger.query.DataTypeDefinitions;
+import com.stackroute.datamunger.query.Filter;
+import com.stackroute.datamunger.query.Header;
+import com.stackroute.datamunger.query.Row;
+import com.stackroute.datamunger.query.RowDataTypeDefinitions;
 import com.stackroute.datamunger.query.parser.QueryParameter;
+import com.stackroute.datamunger.query.parser.Restriction;
 
 public class CsvQueryProcessor implements QueryProcessingEngine {
 	/*
 	 * This method will take QueryParameter object as a parameter which contains the
 	 * parsed query and will process and populate the ResultSet
 	 */
+	
+	DataSet resultSet = new DataSet();
+	
 	public DataSet getResultSet(QueryParameter queryParameter) {
 
 		/*
 		 * initialize BufferedReader to read from the file which is mentioned in
 		 * QueryParameter. Consider Handling Exception related to file reading.
 		 */
+		BufferedReader line = null;
+		try {
+			line = new BufferedReader(new FileReader(queryParameter.getFileName()));
+		} catch (FileNotFoundException e) {
+			System.out.println("File not found - "+ e.getMessage());
+		}
 
 		/*
 		 * read the first line which contains the header. Please note that the headers
 		 * can contain spaces in between them. For eg: city, winner
 		 */
+		String headerLine = null;
+		try {
+			headerLine = line.readLine();
+		} catch (IOException e) {
+			System.out.println("Error reading header - "+e.getMessage());
+		}
+		String[] headerArray = headerLine.split(",");
 
 		/*
 		 * read the next line which contains the first row of data. We are reading this
@@ -26,11 +56,25 @@ public class CsvQueryProcessor implements QueryProcessingEngine {
 		 * that ipl.csv file contains null value in the last column. If you do not
 		 * consider this while splitting, this might cause exceptions later
 		 */
+		String dataLine = null;
+		try {
+			dataLine = line.readLine();
+		} catch (IOException e) {
+			System.out.println("Error reading first data line - "+e.getMessage());
+		}
+		String[] firstDataLineArray = dataLine.split(",",-1);
 
 		/*
 		 * populate the header Map object from the header array. header map is having
 		 * data type <String,Integer> to contain the header and it's index.
 		 */
+		HashMap<String, Integer> headerMap = new HashMap<String, Integer>();
+		Header header = new Header();
+		
+		for(int i=0;i<headerArray.length;i++)
+			headerMap.put(headerArray[i], (i+1));
+			
+		header.setHeaderMap(headerMap);
 
 		/*
 		 * We have read the first line of text already and kept it in an array. Now, we
@@ -39,6 +83,16 @@ public class CsvQueryProcessor implements QueryProcessingEngine {
 		 * it's data type. To find the dataType by the field value, we will use
 		 * getDataType() method of DataTypeDefinitions class
 		 */
+		HashMap<Integer, String> rowDataTypeMap = new HashMap<Integer, String>();
+		RowDataTypeDefinitions rowDataTypeDefinition = new RowDataTypeDefinitions();
+		String dataType=null;
+		
+		for(int i=0;i<firstDataLineArray.length;i++) {
+			dataType = (DataTypeDefinitions.getDataType(firstDataLineArray[i]).toString());
+			rowDataTypeMap.put((i+1), dataType);
+		}
+			
+		rowDataTypeDefinition.setRowDataTypeDefinitions(rowDataTypeMap);
 
 		/*
 		 * once we have the header and dataTypeDefinitions maps populated, we can start
@@ -48,8 +102,67 @@ public class CsvQueryProcessor implements QueryProcessingEngine {
 		 * read the next line. We will continue this till we have read till the last
 		 * line of the CSV file.
 		 */
+		List<String> fields = queryParameter.getFields();
+		List<Restriction> restrictions = queryParameter.getRestrictions();
+		List<String> logicalOps = queryParameter.getLogicalOperators();
+		
+		LinkedHashMap<Long, Row> dataSet = new LinkedHashMap<Long, Row>();
+		Long dataSetCount = (long) 1;
+		
+		String[] dataLineArray = firstDataLineArray;
+		
+		Filter filter = new Filter();
+		
+		Boolean restrictionResult = true;
+		
+		while(!dataLine.isEmpty()) {
+			
+			if( restrictions != null )
+				restrictionResult = filter.evaluateExpression(restrictions, logicalOps, dataLineArray);
+			
+			if(restrictionResult) {
+				HashMap<String, String> rowObjHashMap = new HashMap<String, String>();
+				Row rowObj = new Row();
+				
+				if(fields.get(0).equals("*")) {
+					for(int i=0;i<headerArray.length;i++) {
+						String colName = headerArray[i];
+						String colValue = dataLineArray[i];
+						
+						rowObjHashMap.put(colName, colValue);
+					}
+				}
+				else {
+					for(int i=0;i<fields.size();i++) {
+						String colName = fields.get(i);
+						String colValue = dataLineArray[header.get(colName)];
+						
+						rowObjHashMap.put(colName, colValue);
+					}
+				}
+				
+				rowObj.setRowObj(rowObjHashMap);
+				//add to resultSet DataSet To-Do
+				dataSet.put(dataSetCount, rowObj);
+				dataSetCount = dataSetCount + 1;
+			}
+			else {
+			try {
+				dataLine = line.readLine();
+				dataLineArray = dataLine.split(",",-1);
+				
+			} catch (IOException e) {
+				System.out.println("Error reading line - "+e.getMessage());
+			}
+			}
+		}
 
 		/* reset the buffered reader so that it can start reading from the first line */
+		try {
+			line.close();
+		} catch (IOException e) {
+			System.out.println("Error closing BufferedReader - "+e.getMessage());
+		}
 
 		/*
 		 * skip the first line as it is already read earlier which contained the header
@@ -94,9 +207,9 @@ public class CsvQueryProcessor implements QueryProcessingEngine {
 		 * <Long,Row> to hold the rowId (to be manually generated by incrementing a Long
 		 * variable) and it's corresponding Row Object.
 		 */
-
+		resultSet.setDataSet(dataSet);
 		/* return dataset object */
-		return null;
+		return resultSet;
 	}
 
 }
