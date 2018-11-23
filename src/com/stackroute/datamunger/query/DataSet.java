@@ -10,14 +10,14 @@ public class DataSet extends LinkedHashMap<Long, Row> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	LinkedHashMap<Long, Row> dataSet = new LinkedHashMap<Long, Row>();
-
-	public LinkedHashMap<Long, Row> getDataSet() {
-		return dataSet;
-	}
-
-	public void setDataSet(LinkedHashMap<Long, Row> dataSet) {
-		this.dataSet = dataSet;
-	}
+//	LinkedHashMap<Long, Row> dataSet = new LinkedHashMap<Long, Row>();
+//
+//	public LinkedHashMap<Long, Row> getDataSet() {
+//		return dataSet;
+//	}
+//
+//	public void setDataSet(LinkedHashMap<Long, Row> dataSet) {
+//		this.dataSet = dataSet;
+//	}
 		
 }

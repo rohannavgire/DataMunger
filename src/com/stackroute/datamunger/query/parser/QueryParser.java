@@ -139,6 +139,12 @@ public class QueryParser {
 		fieldsArray = (fields.replaceAll(" ", "")).split(",");
 		}
 		
+//		for(int i=0;i<fieldsArray.length;i++) {
+//			if(fieldsArray[i].toLowerCase().contains("count") || fieldsArray[i].toLowerCase().contains("sum") || fieldsArray[i].toLowerCase().contains("min") || fieldsArray[i].toLowerCase().contains("max")) {
+//				fieldsArray[i] = fieldsArray[i].substring(fieldsArray[i].indexOf("(")+1,fieldsArray[i].indexOf(")"));
+//			}
+//		}
+		
 		for(int i=0;i<fieldsArray.length;i++) {
 			fieldsList.add(fieldsArray[i]);
 			}
@@ -197,10 +203,22 @@ public class QueryParser {
 			String symbol = null;
 			String[] conditionElements = null;
 			
-			if(conditionsArray[i].contains("=")) {
+			if(conditionsArray[i].contains(">=")) {
+				symbol = ">=";
+				conditionElements = conditionsArray[i].split(">=");
+			}
+			else if(conditionsArray[i].contains("<=")) {
+				symbol = "<=";
+				conditionElements = conditionsArray[i].split("<=");
+			}
+			else if(conditionsArray[i].contains("!=")) {
+				symbol = "!=";
+				conditionElements = conditionsArray[i].split("!=");
+			}
+			else if(conditionsArray[i].contains("=")) {
 				symbol = "=";
 				conditionElements = conditionsArray[i].split("=");
-			}
+			}			
 			else if(conditionsArray[i].contains("<")) {
 				symbol = "<";
 				conditionElements = conditionsArray[i].split("<");
@@ -210,9 +228,10 @@ public class QueryParser {
 				conditionElements = conditionsArray[i].split(">");
 			}
 			
+			
 			String name = conditionElements[0].trim();
 			String condition = symbol;
-			String value = conditionElements[1].replace("'","").trim();
+			String value = conditionElements[1].replace("'","").trim();		
 			
 			Restriction restrict = new Restriction(name, value, condition);
 			

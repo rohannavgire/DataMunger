@@ -541,7 +541,7 @@ public class DataMungerTest {
 		Iterator itr = map.iterator();
 
 		int counter = 0;
-		while (itr.hasNext()) {
+		while (itr.hasNext()) {			
 			if (recordscounter == 1) {
 				if (itr.next().toString().contains(
 						"1={date=2008-04-18, venue=M Chinnaswamy Stadium, win_by_wickets=0, city=Bangalore, team1=Kolkata Knight Riders, team2=Royal Challengers Bangalore, result=normal, dl_applied=0, winner=Kolkata Knight Riders, player_of_match=BB McCullum, umpire1=Asad Rauf, season=2008, toss_winner=Royal Challengers Bangalore, umpire3=, id=1, umpire2=RE Koertzen, toss_decision=field, win_by_runs=140}")) {
