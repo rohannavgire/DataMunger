@@ -23,8 +23,6 @@ public class DataMunger {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("You entered: '" + queryString + "'");
-		System.out.println("-------------------------------------------------");
 
 		/*
 		 * Instantiate Query class. This class is responsible for: 1. Parsing the query
@@ -46,9 +44,7 @@ public class DataMunger {
 		 */
 		HashMap resultSet = new HashMap();
 		resultSet  = queryObj.executeQuery(queryString);
-		System.out.println("Writing status: ");
-		System.out.println(jsonwriter.writeToJson(resultSet));
-//		jsonwriter.writeToJson(resultSet);
+		jsonwriter.writeToJson(resultSet);
 		
 	}
 }
